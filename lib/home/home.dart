@@ -1,3 +1,3 @@
-export 'cubit/home_cubit.dart';
+export 'bloc/home_bloc.dart';
 export 'view/home_page.dart';
 export 'view/home_view.dart';

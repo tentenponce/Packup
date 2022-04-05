@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../home.dart';
 
 class DayCountView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(title: const Text('Packup')),
-      body: Center(
-        child: Text('Day Count View', style: textTheme.headline2),
+      body: Container(
+        width: double.infinity,
+        child: Column(
+          children: [
+            TextField(
+              onChanged: (text) => context
+                  .read<HomeBloc>()
+                  .add(HomeDayCountChanged(int.parse(text))),
+            ),
+            TextButton(
+              child: Text('Day Count View'),
+              onPressed: () => context.read<HomeBloc>().add(HomeNextPage()),
+            ),
+          ],
+        ),
       ),
     );
   }
