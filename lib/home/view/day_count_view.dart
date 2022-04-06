@@ -11,11 +11,20 @@ class DayCountView extends StatelessWidget {
       body: Container(
         width: double.infinity,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              onChanged: (text) => context
-                  .read<HomeBloc>()
-                  .add(HomeDayCountChanged(int.parse(text))),
+              keyboardType: TextInputType.number,
+              onChanged: (text) =>
+                  context.read<HomeBloc>().add(HomeDayCountChanged(text)),
+            ),
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                return Visibility(
+                  child: Text('Invalid value'),
+                  visible: !state.validDayCount,
+                );
+              },
             ),
             TextButton(
               child: Text('Day Count View'),

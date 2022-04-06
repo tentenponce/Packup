@@ -18,7 +18,7 @@ class HomePreviousPage extends HomeEvent {
 class HomeDayCountChanged extends HomeEvent {
   const HomeDayCountChanged(this.dayCount);
 
-  final int dayCount;
+  final String dayCount;
 
   @override
   List<Object> get props => [dayCount];

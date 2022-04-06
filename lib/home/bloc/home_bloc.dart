@@ -37,6 +37,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     HomeDayCountChanged event,
     Emitter<HomeState> emit,
   ) {
-    emit(state.copyWith(dayCount: event.dayCount));
+    var isValid = RegExp(r'^[0-9]+$').hasMatch(event.dayCount);
+
+    emit(state.copyWith(
+      dayCount: event.dayCount,
+      validDayCount: isValid,
+    ));
   }
 }
