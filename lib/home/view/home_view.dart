@@ -35,21 +35,6 @@ class HomeView extends StatelessWidget {
             },
           ),
         ),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            FloatingActionButton(
-              child: const Icon(Icons.add),
-              onPressed: () => context.read<HomeBloc>().add(HomeNextPage()),
-            ),
-            const SizedBox(height: 8),
-            FloatingActionButton(
-              child: const Icon(Icons.remove),
-              onPressed: () => context.read<HomeBloc>().add(HomePreviousPage()),
-            ),
-          ],
-        ),
       ),
     );
   }
