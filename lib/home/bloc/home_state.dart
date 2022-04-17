@@ -17,6 +17,9 @@ class HomeState extends Equatable {
   static const DEFAULT_NIGHT_COUNT =
       '2'; // most of our trips is 2 nights long. Agree? lol
   static const DEFAULT_VALID_NIGHT_COUNT = true;
+  static const DEFAULT_ACTIVITY_COUNT =
+      '1'; // most of our trips include swimming. Agree? lol
+  static const DEFAULT_VALID_ACTIVITY_COUNT = true;
 
   const HomeState({
     this.page = DEFAULT_PAGE,
@@ -24,6 +27,8 @@ class HomeState extends Equatable {
     this.validDayCount = DEFAULT_VALID_DAY_COUNT,
     this.nightCount = DEFAULT_NIGHT_COUNT,
     this.validNightCount = DEFAULT_VALID_NIGHT_COUNT,
+    this.activityCount = DEFAULT_ACTIVITY_COUNT,
+    this.validActivityCount = DEFAULT_VALID_ACTIVITY_COUNT,
   });
 
   final HomePages page;
@@ -31,6 +36,8 @@ class HomeState extends Equatable {
   final bool validDayCount;
   final String nightCount;
   final bool validNightCount;
+  final String activityCount;
+  final bool validActivityCount;
 
   HomeState copyWith({
     HomePages? page,
@@ -38,6 +45,8 @@ class HomeState extends Equatable {
     bool? validDayCount,
     String? nightCount,
     bool? validNightCount,
+    String? activityCount,
+    bool? validActivityCount,
   }) {
     return HomeState(
       page: page ?? this.page,
@@ -45,6 +54,8 @@ class HomeState extends Equatable {
       validDayCount: validDayCount ?? this.validDayCount,
       nightCount: nightCount ?? this.nightCount,
       validNightCount: validNightCount ?? this.validNightCount,
+      activityCount: activityCount ?? this.activityCount,
+      validActivityCount: validActivityCount ?? this.validActivityCount,
     );
   }
 
@@ -55,5 +66,7 @@ class HomeState extends Equatable {
         validDayCount,
         nightCount,
         validNightCount,
+        activityCount,
+        validActivityCount,
       ];
 }

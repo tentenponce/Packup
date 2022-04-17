@@ -5,6 +5,7 @@ import 'package:packup/home/bloc/home_bloc.dart';
 import '../home.dart';
 import 'day_count_view.dart';
 import 'night_count_view.dart';
+import 'activity_view.dart';
 
 class HomeView extends StatelessWidget {
   @override
@@ -24,7 +25,7 @@ class HomeView extends StatelessWidget {
                   view = NightCountView();
                   break;
                 case HomePages.activityCount:
-                  view = DayCountView();
+                  view = ActivityView();
                   break;
                 case HomePages.summary:
                   view = DayCountView();
