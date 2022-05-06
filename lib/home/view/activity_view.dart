@@ -9,6 +9,7 @@ class ActivityView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        padding: EdgeInsets.all(space_m),
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -16,6 +17,7 @@ class ActivityView extends StatelessWidget {
             SizedBox(height: space_xxxl),
             Text(
               'How many activities that require clothes?',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: text_huge,
               ),
@@ -30,19 +32,19 @@ class ActivityView extends StatelessWidget {
             SizedBox(height: space_xxxl),
             Container(
               width: grid_30,
-              child: TextField(
+              child: TextFormField(
+                initialValue: context.read<HomeBloc>().state.activityCount,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
-                controller: TextEditingController(
-                    text: HomeState.DEFAULT_ACTIVITY_COUNT),
-                onChanged: (text) =>
-                    context.read<HomeBloc>().add(HomeDayCountChanged(text)),
+                onChanged: (text) => context
+                    .read<HomeBloc>()
+                    .add(HomeActivityCountChanged(text)),
                 style: TextStyle(
                   fontSize: text_very_huge,
                 ),
               ),
             ),
-            SizedBox(height: space_xxxl),
+            SizedBox(height: space_m),
             BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
                 return Visibility(
@@ -50,10 +52,11 @@ class ActivityView extends StatelessWidget {
                     'Invalid value',
                     style: TextStyle(color: Colors.red),
                   ),
-                  visible: !state.validDayCount,
+                  visible: !state.validActivityCount,
                 );
               },
             ),
+            SizedBox(height: space_xxxl),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

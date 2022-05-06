@@ -9,6 +9,7 @@ class NightCountView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        padding: EdgeInsets.all(space_m),
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -16,6 +17,7 @@ class NightCountView extends StatelessWidget {
             SizedBox(height: space_xxxl),
             Text(
               'How many nights is your trip?',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: text_huge,
               ),
@@ -23,19 +25,18 @@ class NightCountView extends StatelessWidget {
             SizedBox(height: space_xxxl),
             Container(
               width: grid_30,
-              child: TextField(
+              child: TextFormField(
+                initialValue: context.read<HomeBloc>().state.nightCount,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
-                controller:
-                    TextEditingController(text: HomeState.DEFAULT_NIGHT_COUNT),
                 onChanged: (text) =>
-                    context.read<HomeBloc>().add(HomeDayCountChanged(text)),
+                    context.read<HomeBloc>().add(HomeNightCountChanged(text)),
                 style: TextStyle(
                   fontSize: text_very_huge,
                 ),
               ),
             ),
-            SizedBox(height: space_xxxl),
+            SizedBox(height: space_m),
             BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
                 return Visibility(
@@ -43,10 +44,11 @@ class NightCountView extends StatelessWidget {
                     'Invalid value',
                     style: TextStyle(color: Colors.red),
                   ),
-                  visible: !state.validDayCount,
+                  visible: !state.validNightCount,
                 );
               },
             ),
+            SizedBox(height: space_xxxl),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

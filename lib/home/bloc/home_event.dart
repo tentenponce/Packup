@@ -23,3 +23,25 @@ class HomeDayCountChanged extends HomeEvent {
   @override
   List<Object> get props => [dayCount];
 }
+
+class HomeNightCountChanged extends HomeEvent {
+  const HomeNightCountChanged(this.nightCount);
+
+  final String nightCount;
+
+  @override
+  List<Object> get props => [nightCount];
+}
+
+class HomeActivityCountChanged extends HomeEvent {
+  const HomeActivityCountChanged(this.activityCount);
+
+  final String activityCount;
+
+  @override
+  List<Object> get props => [activityCount];
+}
+
+class HomeResetValues extends HomeEvent {
+  const HomeResetValues();
+}

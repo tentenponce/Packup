@@ -9,6 +9,7 @@ class DayCountView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        padding: EdgeInsets.all(space_m),
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -16,6 +17,7 @@ class DayCountView extends StatelessWidget {
             SizedBox(height: space_xxxl),
             Text(
               'How many days is your trip?',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: text_huge,
               ),
@@ -23,11 +25,10 @@ class DayCountView extends StatelessWidget {
             SizedBox(height: space_xxxl),
             Container(
               width: grid_30,
-              child: TextField(
+              child: TextFormField(
+                initialValue: context.read<HomeBloc>().state.dayCount,
                 textAlign: TextAlign.center,
                 keyboardType: TextInputType.number,
-                controller:
-                    TextEditingController(text: HomeState.DEFAULT_DAY_COUNT),
                 onChanged: (text) =>
                     context.read<HomeBloc>().add(HomeDayCountChanged(text)),
                 style: TextStyle(
@@ -35,7 +36,7 @@ class DayCountView extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: space_xxxl),
+            SizedBox(height: space_m),
             BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
                 return Visibility(
@@ -47,6 +48,7 @@ class DayCountView extends StatelessWidget {
                 );
               },
             ),
+            SizedBox(height: space_xxxl),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

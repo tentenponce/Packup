@@ -18,8 +18,11 @@ class HomeState extends Equatable {
       '2'; // most of our trips is 2 nights long. Agree? lol
   static const DEFAULT_VALID_NIGHT_COUNT = true;
   static const DEFAULT_ACTIVITY_COUNT =
-      '1'; // most of our trips include swimming. Agree? lol
+      '1'; // most of our trips has swimming. Agree? lol
   static const DEFAULT_VALID_ACTIVITY_COUNT = true;
+  static const DEFAULT_DAY_CLOTHES = 4;
+  static const DEFAULT_NIGHT_CLOTHES = 2;
+  static const DEFAULT_UNDERWEAR = 4;
 
   const HomeState({
     this.page = DEFAULT_PAGE,
@@ -29,6 +32,9 @@ class HomeState extends Equatable {
     this.validNightCount = DEFAULT_VALID_NIGHT_COUNT,
     this.activityCount = DEFAULT_ACTIVITY_COUNT,
     this.validActivityCount = DEFAULT_VALID_ACTIVITY_COUNT,
+    this.dayClothes = DEFAULT_DAY_CLOTHES,
+    this.nightClothes = DEFAULT_NIGHT_CLOTHES,
+    this.underwear = DEFAULT_UNDERWEAR,
   });
 
   final HomePages page;
@@ -38,6 +44,9 @@ class HomeState extends Equatable {
   final bool validNightCount;
   final String activityCount;
   final bool validActivityCount;
+  final int dayClothes;
+  final int nightClothes;
+  final int underwear;
 
   HomeState copyWith({
     HomePages? page,
@@ -47,6 +56,9 @@ class HomeState extends Equatable {
     bool? validNightCount,
     String? activityCount,
     bool? validActivityCount,
+    int? dayClothes,
+    int? nightClothes,
+    int? underwear,
   }) {
     return HomeState(
       page: page ?? this.page,
@@ -56,6 +68,9 @@ class HomeState extends Equatable {
       validNightCount: validNightCount ?? this.validNightCount,
       activityCount: activityCount ?? this.activityCount,
       validActivityCount: validActivityCount ?? this.validActivityCount,
+      dayClothes: dayClothes ?? this.dayClothes,
+      nightClothes: nightClothes ?? this.nightClothes,
+      underwear: underwear ?? this.underwear,
     );
   }
 
@@ -68,5 +83,8 @@ class HomeState extends Equatable {
         validNightCount,
         activityCount,
         validActivityCount,
+        dayClothes,
+        nightClothes,
+        underwear,
       ];
 }
