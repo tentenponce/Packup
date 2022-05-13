@@ -20,14 +20,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) {
     var currentPageIndex = pageOrder.indexOf(state.page);
 
-    if (currentPageIndex < pageOrder.length - 1 &&
-        ((state.validDayCount && state.page == HomePages.dayCount) ||
-            (state.validNightCount && state.page == HomePages.nightCount) ||
-            (state.validActivityCount &&
-                state.page == HomePages.activityCount) ||
-            (state.page != HomePages.dayCount &&
-                state.page != HomePages.nightCount &&
-                state.page != HomePages.activityCount))) {
+    if (currentPageIndex < pageOrder.length - 1) {
+      if (state.page == HomePages.dayCount && !state.validDayCount) {
+        return;
+      }
+
+      if (state.page == HomePages.nightCount && !state.validNightCount) {
+        return;
+      }
+
+      if (state.page == HomePages.activityCount && !state.validActivityCount) {
+        return;
+      }
+
       emit(state.copyWith(page: pageOrder[currentPageIndex + 1]));
     }
   }
@@ -57,7 +62,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(state.copyWith(
       dayCount: event.dayCount,
       validDayCount: isValid,
-      dayClothes: int.parse(dayCount) + int.parse(state.activityCount),
+      dayClothes: int.parse(dayCount) + int.parse(state.activityCount) - 1,
+      underwear: int.parse(dayCount) + int.parse(state.activityCount) - 1,
     ));
   }
 
@@ -93,7 +99,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(state.copyWith(
       activityCount: event.activityCount,
       validActivityCount: isValid,
-      dayClothes: int.parse(state.dayCount) + int.parse(activityCount),
+      dayClothes: int.parse(state.dayCount) + int.parse(activityCount) - 1,
+      underwear: int.parse(state.dayCount) + int.parse(activityCount) - 1,
     ));
   }
 

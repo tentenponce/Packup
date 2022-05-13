@@ -20,9 +20,9 @@ class HomeState extends Equatable {
   static const DEFAULT_ACTIVITY_COUNT =
       '1'; // most of our trips has swimming. Agree? lol
   static const DEFAULT_VALID_ACTIVITY_COUNT = true;
-  static const DEFAULT_DAY_CLOTHES = 4;
+  static const DEFAULT_DAY_CLOTHES = 3;
   static const DEFAULT_NIGHT_CLOTHES = 2;
-  static const DEFAULT_UNDERWEAR = 4;
+  static const DEFAULT_UNDERWEAR = 3;
 
   const HomeState({
     this.page = DEFAULT_PAGE,
