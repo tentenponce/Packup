@@ -9,6 +9,7 @@ class SummaryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        padding: EdgeInsets.all(space_m),
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
