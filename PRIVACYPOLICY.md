@@ -18,5 +18,6 @@ We will only keep your information for as long as the mobile application (Packup
 - **When and with whom do we share your information?**
 
  We do not share any information. Any information you input will stay on the application as long as it is up and running.
--
+ 
+ ---
 If you have questions or comments about this notice, you may email us at **poncetenten10@gmail.com**.
