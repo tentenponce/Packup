@@ -8,6 +8,8 @@ class LocalSource {
 
   final SharedPreferences _sp;
 
+  static const KEY_GENERAL_NOTES = 'KEY_GENERAL_NOTES';
+
   Future<void> save<T>(String key, T value) {
     return _sp.setString(key, json.encode(value));
   }

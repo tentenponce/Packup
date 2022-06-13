@@ -4,9 +4,11 @@ import 'package:flutter/widgets.dart';
 import 'app.dart';
 import 'app_observer.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   BlocOverrides.runZoned(
-    () => runApp(const App()),
+    () => runApp(App()),
     blocObserver: AppObserver(),
   );
 }
