@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:packup/components/ui_icon.dart';
 import 'package:packup/res/dimens.dart';
 
 import '../home.dart';
@@ -86,6 +88,30 @@ class SummaryView extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+            SizedBox(height: space_m),
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.fromLTRB(space_l, 0, 0, 0),
+              child: UIIcon(
+                asset: 'assets/ic_edit.svg',
+                height: grid_7,
+                width: grid_7,
+                onPressed: () => {},
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(space_l, space_s, space_l, space_l),
+              child: TextField(
+                enabled: false,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  disabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  hintText: 'Notes',
+                ),
               ),
             ),
             SizedBox(height: space_m),
