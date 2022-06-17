@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:packup/components/ui_icon.dart';
 import 'package:packup/res/dimens.dart';
 
@@ -94,24 +93,39 @@ class SummaryView extends StatelessWidget {
             Container(
               alignment: Alignment.centerLeft,
               margin: EdgeInsets.fromLTRB(space_l, 0, 0, 0),
-              child: UIIcon(
-                asset: 'assets/ic_edit.svg',
-                height: grid_7,
-                width: grid_7,
-                onPressed: () => {},
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  return UIIcon(
+                    asset: state.isEditingNotes
+                        ? 'assets/ic_check.svg'
+                        : 'assets/ic_edit.svg',
+                    height: grid_7,
+                    width: grid_7,
+                    onPressed: () {
+                      state.isEditingNotes
+                          ? context.read<HomeBloc>().add(HomeSaveNotes())
+                          : context.read<HomeBloc>().add(HomeEditNotes());
+                    },
+                  );
+                },
               ),
             ),
             Container(
               padding: EdgeInsets.fromLTRB(space_l, space_s, space_l, space_l),
-              child: TextField(
-                enabled: false,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  disabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  hintText: 'Notes',
-                ),
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  return TextFormField(
+                    initialValue: context.read<HomeBloc>().state.notes,
+                    enabled: state.isEditingNotes,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      disabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      hintText: 'Notes',
+                    ),
+                  );
+                },
               ),
             ),
             SizedBox(height: space_m),

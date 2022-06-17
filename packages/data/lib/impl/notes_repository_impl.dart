@@ -10,7 +10,11 @@ class NotesRepositoryImpl extends NotesRepository {
 
   @override
   String getNote() {
-    return _localSource.get(LocalSource.KEY_GENERAL_NOTES);
+    try {
+      return _localSource.get(LocalSource.KEY_GENERAL_NOTES);
+    } on NullThrownError {
+      return '';
+    }
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:data/impl/notes_repository_impl.dart';
 import 'package:data/source/local_source.dart';
 import 'package:domain/interactor/save_notes.dart';
+import 'package:domain/interactor/get_notes.dart';
 import 'package:domain/repository/notes_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -16,6 +17,12 @@ Future<void> init(BuildContext context) async {
     ),
   );
 
+  sl.registerLazySingleton(
+    () => GetNotes(
+      notesRepository: sl(),
+    ),
+  );
+
   /* Repositories */
   sl.registerLazySingleton<NotesRepository>(
     () => NotesRepositoryImpl(
@@ -26,6 +33,12 @@ Future<void> init(BuildContext context) async {
   /* Data Sources */
   final sp = await SharedPreferences.getInstance();
   sl.registerLazySingleton(
-    () => LocalSource(sp: sp),
+    () => sp,
+  );
+
+  sl.registerLazySingleton(
+    () => LocalSource(
+      sp: sl(),
+    ),
   );
 }
