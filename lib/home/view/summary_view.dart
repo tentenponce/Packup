@@ -115,7 +115,11 @@ class SummaryView extends StatelessWidget {
               child: BlocBuilder<HomeBloc, HomeState>(
                 builder: (context, state) {
                   return TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                     initialValue: context.read<HomeBloc>().state.notes,
+                    onChanged: (text) =>
+                        context.read<HomeBloc>().add(HomeNotesChanged(text)),
                     enabled: state.isEditingNotes,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
