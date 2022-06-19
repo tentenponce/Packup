@@ -24,6 +24,7 @@ class HomeState extends Equatable {
   static const DEFAULT_NIGHT_CLOTHES = 2;
   static const DEFAULT_UNDERWEAR = 3;
   static const DEFAULT_IS_EDITING_NOTES = false;
+
   const HomeState({
     this.page = DEFAULT_PAGE,
     this.dayCount = DEFAULT_DAY_COUNT,
