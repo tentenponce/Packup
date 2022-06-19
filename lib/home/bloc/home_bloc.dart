@@ -1,23 +1,36 @@
 import 'package:bloc/bloc.dart';
+import 'package:domain/interactor/get_notes.dart';
+import 'package:domain/interactor/save_notes.dart';
 import 'package:equatable/equatable.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeState()) {
+  HomeBloc({
+    required GetNotes getNotes,
+    required SaveNotes saveNotes,
+  })  : _getNotes = getNotes,
+        _saveNotes = saveNotes,
+        super(HomeState()) {
     on<HomeNextPage>(_onHomeNextPage);
     on<HomePreviousPage>(_onHomePreviousPage);
     on<HomeDayCountChanged>(_onHomeDayCountChanged);
     on<HomeNightCountChanged>(_onHomeNightCountChanged);
     on<HomeActivityCountChanged>(_onHomeActivityCountChanged);
     on<HomeResetValues>(_onHomeResetValues);
+    on<HomeEditNotes>(_onHomeEditNotes);
+    on<HomeSaveNotes>(_onHomeSaveNotes);
+    on<HomeNotesChanged>(_onHomeNotesChanged);
   }
 
-  void _onHomeNextPage(
+  final GetNotes _getNotes;
+  final SaveNotes _saveNotes;
+
+  Future<void> _onHomeNextPage(
     HomeNextPage event,
     Emitter<HomeState> emit,
-  ) {
+  ) async {
     var currentPageIndex = pageOrder.indexOf(state.page);
 
     if (currentPageIndex < pageOrder.length - 1) {
@@ -33,7 +46,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         return;
       }
 
-      emit(state.copyWith(page: pageOrder[currentPageIndex + 1]));
+      final page = pageOrder[currentPageIndex + 1];
+
+      if (page == HomePages.summary) {
+        final notes = await _getNotes.invoke();
+        emit(state.copyWith(page: page, notes: notes));
+      } else {
+        emit(state.copyWith(page: page));
+      }
     }
   }
 
@@ -120,5 +140,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       nightClothes: HomeState.DEFAULT_NIGHT_CLOTHES,
       underwear: HomeState.DEFAULT_UNDERWEAR,
     ));
+  }
+
+  void _onHomeEditNotes(
+    HomeEditNotes event,
+    Emitter<HomeState> emit,
+  ) {
+    emit(state.copyWith(isEditingNotes: true));
+  }
+
+  Future<void> _onHomeSaveNotes(
+    HomeSaveNotes event,
+    Emitter<HomeState> emit,
+  ) async {
+    await _saveNotes.invoke(state.notes);
+    emit(state.copyWith(isEditingNotes: false));
+  }
+
+  void _onHomeNotesChanged(
+    HomeNotesChanged event,
+    Emitter<HomeState> emit,
+  ) {
+    emit(state.copyWith(notes: event.notes));
   }
 }

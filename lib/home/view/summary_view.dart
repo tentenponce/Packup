@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:packup/components/ui_icon.dart';
 import 'package:packup/res/dimens.dart';
 
 import '../home.dart';
@@ -86,6 +87,49 @@ class SummaryView extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+            SizedBox(height: space_m),
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.fromLTRB(space_l, 0, 0, 0),
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  return UIIcon(
+                    asset: state.isEditingNotes
+                        ? 'assets/ic_check.svg'
+                        : 'assets/ic_edit.svg',
+                    height: grid_7,
+                    width: grid_7,
+                    onPressed: () {
+                      state.isEditingNotes
+                          ? context.read<HomeBloc>().add(HomeSaveNotes())
+                          : context.read<HomeBloc>().add(HomeEditNotes());
+                    },
+                  );
+                },
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(space_l, space_s, space_l, space_l),
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  return TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    initialValue: context.read<HomeBloc>().state.notes,
+                    onChanged: (text) =>
+                        context.read<HomeBloc>().add(HomeNotesChanged(text)),
+                    enabled: state.isEditingNotes,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      disabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      hintText: 'Notes',
+                    ),
+                  );
+                },
               ),
             ),
             SizedBox(height: space_m),

@@ -23,6 +23,7 @@ class HomeState extends Equatable {
   static const DEFAULT_DAY_CLOTHES = 3;
   static const DEFAULT_NIGHT_CLOTHES = 2;
   static const DEFAULT_UNDERWEAR = 3;
+  static const DEFAULT_IS_EDITING_NOTES = false;
 
   const HomeState({
     this.page = DEFAULT_PAGE,
@@ -35,6 +36,8 @@ class HomeState extends Equatable {
     this.dayClothes = DEFAULT_DAY_CLOTHES,
     this.nightClothes = DEFAULT_NIGHT_CLOTHES,
     this.underwear = DEFAULT_UNDERWEAR,
+    this.isEditingNotes = DEFAULT_IS_EDITING_NOTES,
+    this.notes = '',
   });
 
   final HomePages page;
@@ -47,6 +50,8 @@ class HomeState extends Equatable {
   final int dayClothes;
   final int nightClothes;
   final int underwear;
+  final bool isEditingNotes;
+  final String notes;
 
   HomeState copyWith({
     HomePages? page,
@@ -59,6 +64,8 @@ class HomeState extends Equatable {
     int? dayClothes,
     int? nightClothes,
     int? underwear,
+    bool? isEditingNotes,
+    String? notes,
   }) {
     return HomeState(
       page: page ?? this.page,
@@ -71,6 +78,8 @@ class HomeState extends Equatable {
       dayClothes: dayClothes ?? this.dayClothes,
       nightClothes: nightClothes ?? this.nightClothes,
       underwear: underwear ?? this.underwear,
+      isEditingNotes: isEditingNotes ?? this.isEditingNotes,
+      notes: notes ?? this.notes,
     );
   }
 
@@ -86,5 +95,7 @@ class HomeState extends Equatable {
         dayClothes,
         nightClothes,
         underwear,
+        isEditingNotes,
+        notes,
       ];
 }

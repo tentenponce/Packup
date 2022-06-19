@@ -2,8 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'home/home.dart';
 
-class App extends MaterialApp {
+class App extends StatefulWidget {
   @override
-  bool get debugShowCheckedModeBanner => false;
-  const App({Key? key}) : super(key: key, home: const HomePage());
+  State<StatefulWidget> createState() {
+    return AppState();
+  }
+}
+
+class AppState extends State<App> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomePage(),
+    );
+  }
 }

@@ -45,3 +45,20 @@ class HomeActivityCountChanged extends HomeEvent {
 class HomeResetValues extends HomeEvent {
   const HomeResetValues();
 }
+
+class HomeNotesChanged extends HomeEvent {
+  const HomeNotesChanged(this.notes);
+
+  final String notes;
+
+  @override
+  List<Object> get props => [notes];
+}
+
+class HomeEditNotes extends HomeEvent {
+  const HomeEditNotes();
+}
+
+class HomeSaveNotes extends HomeEvent {
+  const HomeSaveNotes();
+}
