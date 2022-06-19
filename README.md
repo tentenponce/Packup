@@ -2,6 +2,12 @@
 
 Assists you in packing up your next trip.
 
+### Build APK for production
+
+- Add `prod.keystore` on `android/.signing/` folder
+- Update `android/.signing/key.properties` file
+- Run `flutter build appbundle`
+
 ### Run tests
 
 - Generate mocks first: `flutter pub run build_runner build`
