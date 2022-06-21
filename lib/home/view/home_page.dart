@@ -1,5 +1,5 @@
-import 'package:domain/interactor/get_notes.dart';
-import 'package:domain/interactor/save_notes.dart';
+import 'package:domain/interactor/notes/get_notes.dart';
+import 'package:domain/interactor/notes/save_notes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:packup/di.dart';

@@ -4,8 +4,8 @@
 
 import 'dart:async' as _i3;
 
-import 'package:domain/interactor/get_notes.dart' as _i2;
-import 'package:domain/interactor/save_notes.dart' as _i4;
+import 'package:domain/interactor/notes/get_notes.dart' as _i2;
+import 'package:domain/interactor/notes/save_notes.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint

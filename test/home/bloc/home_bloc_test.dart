@@ -1,5 +1,5 @@
-import 'package:domain/interactor/get_notes.dart';
-import 'package:domain/interactor/save_notes.dart';
+import 'package:domain/interactor/notes/get_notes.dart';
+import 'package:domain/interactor/notes/save_notes.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:packup/home/bloc/home_bloc.dart';

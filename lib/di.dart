@@ -1,7 +1,7 @@
 import 'package:data/impl/notes_repository_impl.dart';
 import 'package:data/source/local_source.dart';
-import 'package:domain/interactor/save_notes.dart';
-import 'package:domain/interactor/get_notes.dart';
+import 'package:domain/interactor/notes/save_notes.dart';
+import 'package:domain/interactor/notes/get_notes.dart';
 import 'package:domain/repository/notes_repository.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';

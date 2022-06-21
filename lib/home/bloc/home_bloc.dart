@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:domain/interactor/get_notes.dart';
-import 'package:domain/interactor/save_notes.dart';
+import 'package:domain/interactor/notes/get_notes.dart';
+import 'package:domain/interactor/notes/save_notes.dart';
 import 'package:equatable/equatable.dart';
 
 part 'home_event.dart';
