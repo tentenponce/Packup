@@ -62,3 +62,35 @@ class HomeEditNotes extends HomeEvent {
 class HomeSaveNotes extends HomeEvent {
   const HomeSaveNotes();
 }
+
+class HomeClickAddActivity extends HomeEvent {
+  const HomeClickAddActivity();
+}
+
+class HomeAddActivity extends HomeEvent {
+  const HomeAddActivity(this.name);
+
+  final String name;
+
+  @override
+  List<Object> get props => [name];
+}
+
+class HomeDeleteActivity extends HomeEvent {
+  const HomeDeleteActivity(this.name);
+
+  final String name;
+
+  @override
+  List<Object> get props => [name];
+}
+
+class HomeSaveActivityNote extends HomeEvent {
+  const HomeSaveActivityNote(this.name, this.note);
+
+  final String name;
+  final String note;
+
+  @override
+  List<Object> get props => [name, note];
+}
