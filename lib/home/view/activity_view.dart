@@ -1,10 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:packup/components/ui_icon.dart';
 import 'package:packup/res/dimens.dart';
 
 import '../home.dart';
 
-class ActivityView extends StatelessWidget {
+class ActivityView extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return ActivityViewState();
+  }
+}
+
+class ActivityViewState extends State<ActivityView> {
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<HomeBloc>().stream.listen((state) {
+      if (state.prompt?.first == HomePrompt.duplicateActivity) {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text('${state.prompt?.last} already exists.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +47,7 @@ class ActivityView extends StatelessWidget {
           children: [
             SizedBox(height: space_xxxl),
             Text(
-              'How many activities that require clothes?',
+              'Check the activities included in your trip',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: text_huge,
@@ -24,35 +55,35 @@ class ActivityView extends StatelessWidget {
             ),
             SizedBox(height: space_m),
             Text(
-              'Example: Swimming, Hiking, etc.',
+              'You can add/delete activities and add notes per activity.',
               style: TextStyle(
                 fontSize: text_s,
               ),
             ),
-            SizedBox(height: space_xxxl),
+            SizedBox(height: space_xl),
             Container(
-              width: grid_30,
-              child: TextFormField(
-                initialValue: context.read<HomeBloc>().state.activityCount,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                onChanged: (text) => context
-                    .read<HomeBloc>()
-                    .add(HomeActivityCountChanged(text)),
-                style: TextStyle(
-                  fontSize: text_very_huge,
-                ),
+              alignment: Alignment.centerRight,
+              child: UIIcon(
+                width: grid_10,
+                height: grid_10,
+                asset: 'assets/ic_add.svg',
+                onPressed: () {
+                  context.read<HomeBloc>().add(HomeAddActivity('Hiking'));
+                },
               ),
+            ),
+            BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                return Column(
+                  children: [],
+                );
+              },
             ),
             SizedBox(height: space_m),
             BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
-                return Visibility(
-                  child: Text(
-                    'Invalid value',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  visible: !state.validActivityCount,
+                return Column(
+                  children: state.activities.map((e) => Text(e.name)).toList(),
                 );
               },
             ),

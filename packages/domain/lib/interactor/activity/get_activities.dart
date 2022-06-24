@@ -10,7 +10,7 @@ class GetActivities extends UseCaseNoParam<Iterable<Activity>> {
   final ActivityRepository _activityRepository;
 
   @override
-  Future<Iterable<Activity>> invoke() {
-    return Future.value(_activityRepository.getActivities());
+  Future<Iterable<Activity>> invoke() async {
+    return _activityRepository.getActivities();
   }
 }

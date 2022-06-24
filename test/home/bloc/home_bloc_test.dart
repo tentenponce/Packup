@@ -1,3 +1,5 @@
+import 'package:domain/interactor/activity/get_activities.dart';
+import 'package:domain/interactor/activity/save_activity.dart';
 import 'package:domain/interactor/notes/get_notes.dart';
 import 'package:domain/interactor/notes/save_notes.dart';
 import 'package:mockito/annotations.dart';
@@ -8,19 +10,28 @@ import 'package:bloc_test/bloc_test.dart';
 
 import 'home_bloc_test.mocks.dart';
 
-@GenerateMocks([GetNotes, SaveNotes])
+@GenerateMocks([GetNotes, SaveNotes, GetActivities, SaveActivity])
 void main() {
   group('HomeBloc', () {
     late HomeBloc homeBloc;
     late MockGetNotes getNotes;
     late MockSaveNotes saveNotes;
+    late MockGetActivities getActivities;
+    late MockSaveActivity saveActivity;
 
     setUp(() {
       getNotes = MockGetNotes();
       saveNotes = MockSaveNotes();
+      getActivities = MockGetActivities();
+      saveActivity = MockSaveActivity();
       when(saveNotes.invoke(any)).thenAnswer((_) => Future.value(null));
       when(getNotes.invoke()).thenAnswer((_) => Future.value('test notes'));
-      homeBloc = HomeBloc(getNotes: getNotes, saveNotes: saveNotes);
+      homeBloc = HomeBloc(
+        getNotes: getNotes,
+        saveNotes: saveNotes,
+        getActivities: getActivities,
+        saveActivity: saveActivity,
+      );
     });
 
     blocTest(

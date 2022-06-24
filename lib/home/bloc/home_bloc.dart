@@ -1,6 +1,11 @@
+import 'package:analyzer_plugin/utilities/pair.dart';
 import 'package:bloc/bloc.dart';
+import 'package:domain/errors/duplicate_error.dart';
+import 'package:domain/interactor/activity/get_activities.dart';
+import 'package:domain/interactor/activity/save_activity.dart';
 import 'package:domain/interactor/notes/get_notes.dart';
 import 'package:domain/interactor/notes/save_notes.dart';
+import 'package:domain/model/activity.dart';
 import 'package:equatable/equatable.dart';
 
 part 'home_event.dart';
@@ -10,22 +15,38 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     required GetNotes getNotes,
     required SaveNotes saveNotes,
+    required GetActivities getActivities,
+    required SaveActivity saveActivity,
   })  : _getNotes = getNotes,
         _saveNotes = saveNotes,
+        _getActivities = getActivities,
+        _saveActivity = saveActivity,
         super(HomeState()) {
     on<HomeNextPage>(_onHomeNextPage);
     on<HomePreviousPage>(_onHomePreviousPage);
     on<HomeDayCountChanged>(_onHomeDayCountChanged);
     on<HomeNightCountChanged>(_onHomeNightCountChanged);
-    on<HomeActivityCountChanged>(_onHomeActivityCountChanged);
     on<HomeResetValues>(_onHomeResetValues);
     on<HomeEditNotes>(_onHomeEditNotes);
     on<HomeSaveNotes>(_onHomeSaveNotes);
     on<HomeNotesChanged>(_onHomeNotesChanged);
+    on<HomeAddActivity>(_onHomeAddActivity);
+    on<HomeInit>(_onHomeInit);
   }
 
   final GetNotes _getNotes;
   final SaveNotes _saveNotes;
+  final GetActivities _getActivities;
+  final SaveActivity _saveActivity;
+
+  Future<void> _onHomeInit(
+    HomeInit event,
+    Emitter<HomeState> emit,
+  ) async {
+    final activities = await _getActivities.invoke();
+
+    emit(state.copyWith(activities: activities));
+  }
 
   Future<void> _onHomeNextPage(
     HomeNextPage event,
@@ -39,10 +60,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
 
       if (state.page == HomePages.nightCount && !state.validNightCount) {
-        return;
-      }
-
-      if (state.page == HomePages.activityCount && !state.validActivityCount) {
         return;
       }
 
@@ -79,11 +96,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       dayCount = HomeState.DEFAULT_DAY_COUNT;
     }
 
+    /// TODO
     emit(state.copyWith(
       dayCount: event.dayCount,
       validDayCount: isValid,
-      dayClothes: int.parse(dayCount) + int.parse(state.activityCount) - 1,
-      underwear: int.parse(dayCount) + int.parse(state.activityCount) - 1,
+      dayClothes: int.parse(dayCount) - 1,
+      underwear: int.parse(dayCount) - 1,
+      // dayClothes: int.parse(dayCount) + int.parse(state.activityCount) - 1,
+      // underwear: int.parse(dayCount) + int.parse(state.activityCount) - 1,
     ));
   }
 
@@ -105,25 +125,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     ));
   }
 
-  void _onHomeActivityCountChanged(
-    HomeActivityCountChanged event,
-    Emitter<HomeState> emit,
-  ) {
-    var isValid = RegExp(r'^[0-9]+$').hasMatch(event.activityCount);
-
-    var activityCount = event.activityCount;
-    if (!isValid) {
-      activityCount = HomeState.DEFAULT_ACTIVITY_COUNT;
-    }
-
-    emit(state.copyWith(
-      activityCount: event.activityCount,
-      validActivityCount: isValid,
-      dayClothes: int.parse(state.dayCount) + int.parse(activityCount) - 1,
-      underwear: int.parse(state.dayCount) + int.parse(activityCount) - 1,
-    ));
-  }
-
   void _onHomeResetValues(
     HomeResetValues event,
     Emitter<HomeState> emit,
@@ -134,8 +135,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       validDayCount: HomeState.DEFAULT_VALID_DAY_COUNT,
       nightCount: HomeState.DEFAULT_NIGHT_COUNT,
       validNightCount: HomeState.DEFAULT_VALID_NIGHT_COUNT,
-      activityCount: HomeState.DEFAULT_ACTIVITY_COUNT,
-      validActivityCount: HomeState.DEFAULT_VALID_ACTIVITY_COUNT,
       dayClothes: HomeState.DEFAULT_DAY_CLOTHES,
       nightClothes: HomeState.DEFAULT_NIGHT_CLOTHES,
       underwear: HomeState.DEFAULT_UNDERWEAR,
@@ -162,5 +161,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) {
     emit(state.copyWith(notes: event.notes));
+  }
+
+  Future<void> _onHomeAddActivity(
+    HomeAddActivity event,
+    Emitter<HomeState> emit,
+  ) async {
+    try {
+      final newActivity = Activity(event.name, '');
+
+      await _saveActivity.invoke(newActivity);
+
+      final activities = state.activities.toList();
+      activities.add(newActivity);
+
+      emit(state.copyWith(activities: activities));
+    } on DuplicateError {
+      emit(state.copyWith(
+          prompt: Pair(HomePrompt.duplicateActivity, event.name)));
+    }
   }
 }

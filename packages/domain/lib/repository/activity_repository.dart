@@ -5,5 +5,5 @@ abstract class ActivityRepository {
 
   Future<void> saveActivity(Activity activity);
 
-  Iterable<Activity> getActivities();
+  Future<Iterable<Activity>> getActivities();
 }

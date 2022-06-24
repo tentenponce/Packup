@@ -11,6 +11,8 @@ import 'summary_view.dart';
 class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    context.read<HomeBloc>().add(HomeInit());
+
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) => {},
       child: Scaffold(

@@ -16,19 +16,26 @@ class ActivityRepositoryImpl extends ActivityRepository {
   ///
   /// on NullThrownError, add default activities and return it.
   @override
-  Iterable<Activity> getActivities() {
+  Future<Iterable<Activity>> getActivities() async {
     try {
-      return _localSource.get(LocalSource.KEY_ACTIVITIES);
+      final dynamicList =
+          _localSource.get<Iterable<dynamic>>(LocalSource.KEY_ACTIVITIES);
+
+      return dynamicList.map((e) => Activity.fromJson(e));
     } on NullThrownError {
-      _localSource.save(LocalSource.KEY_ACTIVITIES, DEFAULT_ACTIVITIES);
+      await _localSource.save(LocalSource.KEY_ACTIVITIES, DEFAULT_ACTIVITIES);
       return DEFAULT_ACTIVITIES;
     }
   }
 
   @override
-  Future<void> saveActivity(Activity activity) {
-    final activities = getActivities().toList();
-    activities.add(activity);
-    return _localSource.save(LocalSource.KEY_ACTIVITIES, activities);
+  Future<void> saveActivity(Activity activity) async {
+    final activities = await getActivities();
+    final mutableActivities = activities.toList()..add(activity);
+
+    return await _localSource.save(
+      LocalSource.KEY_ACTIVITIES,
+      mutableActivities,
+    );
   }
 }
