@@ -2,8 +2,6 @@ part of 'home_bloc.dart';
 
 enum HomePages { dayCount, nightCount, activityCount, summary }
 
-enum HomePrompt { duplicateActivity }
-
 var pageOrder = [
   HomePages.dayCount,
   HomePages.nightCount,
@@ -36,7 +34,6 @@ class HomeState extends Equatable {
     this.isEditingNotes = DEFAULT_IS_EDITING_NOTES,
     this.notes = '',
     this.activities = const Iterable.empty(),
-    this.prompt,
   });
 
   final HomePages page;
@@ -50,7 +47,6 @@ class HomeState extends Equatable {
   final bool isEditingNotes;
   final String notes;
   final Iterable<Activity> activities;
-  final Pair<HomePrompt?, String>? prompt;
 
   HomeState copyWith({
     HomePages? page,
@@ -65,7 +61,6 @@ class HomeState extends Equatable {
     bool? isEditingNotes,
     String? notes,
     Iterable<Activity>? activities,
-    Pair<HomePrompt?, String>? prompt,
   }) {
     return HomeState(
       page: page ?? this.page,
@@ -79,7 +74,6 @@ class HomeState extends Equatable {
       isEditingNotes: isEditingNotes ?? this.isEditingNotes,
       notes: notes ?? this.notes,
       activities: activities ?? this.activities,
-      prompt: prompt ?? this.prompt,
     );
   }
 
@@ -96,6 +90,5 @@ class HomeState extends Equatable {
         isEditingNotes,
         notes,
         activities,
-        prompt ?? Pair(null, ''),
       ];
 }

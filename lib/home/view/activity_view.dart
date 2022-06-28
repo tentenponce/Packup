@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:packup/components/ui_icon.dart';
@@ -13,27 +15,36 @@ class ActivityView extends StatefulWidget {
 }
 
 class ActivityViewState extends State<ActivityView> {
+  StreamSubscription? _subShowDuplicateActivity;
+
   @override
   void initState() {
     super.initState();
 
-    context.read<HomeBloc>().stream.listen((state) {
-      if (state.prompt?.first == HomePrompt.duplicateActivity) {
-        showDialog(
-            context: context,
-            builder: (_) {
-              return AlertDialog(
-                title: Text('${state.prompt?.last} already exists.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: Text('OK'),
-                  ),
-                ],
-              );
-            });
-      }
+    _subShowDuplicateActivity =
+        context.read<HomeBloc>().showDuplicateActivity.listen((activity) {
+      showDialog(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: Text('$activity already exists.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
     });
+  }
+
+  @override
+  void dispose() {
+    _subShowDuplicateActivity?.cancel();
+    super.dispose();
   }
 
   @override

@@ -1,4 +1,5 @@
-import 'package:analyzer_plugin/utilities/pair.dart';
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:domain/errors/duplicate_error.dart';
 import 'package:domain/interactor/activity/get_activities.dart';
@@ -38,6 +39,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final SaveNotes _saveNotes;
   final GetActivities _getActivities;
   final SaveActivity _saveActivity;
+
+  /* one time events */
+  Stream<String> get showDuplicateActivity => _showDuplicateActivity.stream;
+  final _showDuplicateActivity = StreamController<String>.broadcast();
+
+  @override
+  Future<void> close() {
+    _showDuplicateActivity.close();
+    return super.close();
+  }
 
   Future<void> _onHomeInit(
     HomeInit event,
@@ -177,8 +188,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       emit(state.copyWith(activities: activities));
     } on DuplicateError {
-      emit(state.copyWith(
-          prompt: Pair(HomePrompt.duplicateActivity, event.name)));
+      _showDuplicateActivity.add(event.name);
     }
   }
 }
