@@ -16,6 +16,7 @@ class ActivityView extends StatefulWidget {
 
 class ActivityViewState extends State<ActivityView> {
   StreamSubscription? _subShowDuplicateActivity;
+  String? _activityName;
 
   @override
   void initState() {
@@ -79,7 +80,7 @@ class ActivityViewState extends State<ActivityView> {
                 height: grid_10,
                 asset: 'assets/ic_add.svg',
                 onPressed: () {
-                  context.read<HomeBloc>().add(HomeAddActivity('Hiking'));
+                  _displayAddActivityDialog(context);
                 },
               ),
             ),
@@ -131,5 +132,36 @@ class ActivityViewState extends State<ActivityView> {
         ),
       ),
     );
+  }
+
+  Future<void> _displayAddActivityDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('What activity do you want to add?'),
+            content: TextField(
+              onChanged: (value) {
+                setState(() {
+                  _activityName = value;
+                });
+              },
+              controller: null,
+              decoration: InputDecoration(hintText: 'put activity name here'),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  this
+                      .context
+                      .read<HomeBloc>()
+                      .add(HomeAddActivity(_activityName ?? ''));
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
   }
 }
