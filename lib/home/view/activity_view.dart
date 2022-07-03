@@ -92,10 +92,42 @@ class ActivityViewState extends State<ActivityView> {
               },
             ),
             SizedBox(height: space_m),
+            /* build activity list */
             BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
                 return Column(
-                  children: state.activities.map((e) => Text(e.name)).toList(),
+                  children: state.activities.map((e) {
+                    return Row(children: [
+                      Checkbox(
+                          value: false,
+                          onChanged: (bool) {
+                            // TODO: select/deselect activity
+                          }),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(e.name),
+                        ),
+                      ),
+                      UIIcon(
+                        width: grid_8,
+                        height: grid_8,
+                        asset: 'assets/ic_edit.svg',
+                        onPressed: () {
+                          // TODO: add notes
+                        },
+                      ),
+                      SizedBox(width: space_xxs),
+                      UIIcon(
+                        width: grid_10,
+                        height: grid_10,
+                        asset: 'assets/ic_close.svg',
+                        onPressed: () {
+                          // TODO: delete activity
+                        },
+                      ),
+                    ]);
+                  }).toList(),
                 );
               },
             ),
