@@ -1,3 +1,4 @@
+import 'package:domain/interactor/activity/delete_activity.dart';
 import 'package:domain/interactor/activity/get_activities.dart';
 import 'package:domain/interactor/activity/save_activity.dart';
 import 'package:domain/interactor/notes/get_notes.dart';
@@ -13,6 +14,7 @@ class HomePage extends StatelessWidget {
   final saveNotes = sl<SaveNotes>();
   final saveActivity = sl<SaveActivity>();
   final getActivities = sl<GetActivities>();
+  final deleteActivity = sl<DeleteActivity>();
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class HomePage extends StatelessWidget {
         getNotes: getNotes,
         saveActivity: saveActivity,
         getActivities: getActivities,
+        deleteActivity: deleteActivity,
       ),
       child: HomeView(),
     );

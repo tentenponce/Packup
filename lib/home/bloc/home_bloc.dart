@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:domain/errors/duplicate_error.dart';
+import 'package:domain/interactor/activity/delete_activity.dart';
 import 'package:domain/interactor/activity/get_activities.dart';
 import 'package:domain/interactor/activity/save_activity.dart';
 import 'package:domain/interactor/notes/get_notes.dart';
@@ -18,11 +19,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required SaveNotes saveNotes,
     required GetActivities getActivities,
     required SaveActivity saveActivity,
+    required DeleteActivity deleteActivity,
   })  : _getNotes = getNotes,
         _saveNotes = saveNotes,
         _getActivities = getActivities,
         _saveActivity = saveActivity,
+        _deleteActivity = deleteActivity,
         super(HomeState()) {
+    on<HomeInit>(_onHomeInit);
     on<HomeNextPage>(_onHomeNextPage);
     on<HomePreviousPage>(_onHomePreviousPage);
     on<HomeDayCountChanged>(_onHomeDayCountChanged);
@@ -32,13 +36,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeSaveNotes>(_onHomeSaveNotes);
     on<HomeNotesChanged>(_onHomeNotesChanged);
     on<HomeAddActivity>(_onHomeAddActivity);
-    on<HomeInit>(_onHomeInit);
+    on<HomeDeleteActivity>(_onHomeDeleteActivity);
   }
 
   final GetNotes _getNotes;
   final SaveNotes _saveNotes;
   final GetActivities _getActivities;
   final SaveActivity _saveActivity;
+  final DeleteActivity _deleteActivity;
 
   /* one time events */
   Stream<String> get showDuplicateActivity => _showDuplicateActivity.stream;
@@ -190,5 +195,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } on DuplicateError {
       _showDuplicateActivity.add(event.name);
     }
+  }
+
+  Future<void> _onHomeDeleteActivity(
+    HomeDeleteActivity event,
+    Emitter<HomeState> emit,
+  ) async {
+    await _deleteActivity.invoke(event.name);
+
+    final activities = state.activities.toList();
+
+    final activityToDelete = activities
+        .where((activity) =>
+            activity.name.toLowerCase() == event.name.toLowerCase())
+        .first;
+
+    activities.remove(activityToDelete);
+
+    emit(state.copyWith(activities: activities));
   }
 }

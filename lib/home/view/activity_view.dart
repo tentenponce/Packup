@@ -92,11 +92,12 @@ class ActivityViewState extends State<ActivityView> {
               },
             ),
             SizedBox(height: space_m),
-            /* build activity list */
+
+            /// build activity list
             BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
                 return Column(
-                  children: state.activities.map((e) {
+                  children: state.activities.map((activity) {
                     return Row(children: [
                       Checkbox(
                           value: false,
@@ -106,7 +107,7 @@ class ActivityViewState extends State<ActivityView> {
                       Expanded(
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Text(e.name),
+                          child: Text(activity.name),
                         ),
                       ),
                       UIIcon(
@@ -123,7 +124,9 @@ class ActivityViewState extends State<ActivityView> {
                         height: grid_10,
                         asset: 'assets/ic_close.svg',
                         onPressed: () {
-                          // TODO: delete activity
+                          context
+                              .read<HomeBloc>()
+                              .add(HomeDeleteActivity(activity.name));
                         },
                       ),
                     ]);

@@ -3,6 +3,7 @@ import 'package:data/impl/notes_repository_impl.dart';
 import 'package:data/source/local_source.dart';
 import 'package:domain/interactor/activity/get_activities.dart';
 import 'package:domain/interactor/activity/save_activity.dart';
+import 'package:domain/interactor/activity/delete_activity.dart';
 import 'package:domain/interactor/notes/save_notes.dart';
 import 'package:domain/interactor/notes/get_notes.dart';
 import 'package:domain/repository/activity_repository.dart';
@@ -34,6 +35,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton(
     () => GetActivities(
+      activityRepository: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton(
+    () => DeleteActivity(
       activityRepository: sl(),
     ),
   );

@@ -6,4 +6,6 @@ abstract class ActivityRepository {
   Future<void> saveActivity(Activity activity);
 
   Future<Iterable<Activity>> getActivities();
+
+  Future<void> deleteActivity(String activityName);
 }

@@ -38,4 +38,22 @@ class ActivityRepositoryImpl extends ActivityRepository {
       mutableActivities,
     );
   }
+
+  @override
+  Future<void> deleteActivity(String activityName) async {
+    final activities = await getActivities();
+    final mutableActivities = activities.toList();
+
+    final activityToDelete = mutableActivities
+        .where((mutableActivity) =>
+            mutableActivity.name.toLowerCase() == activityName.toLowerCase())
+        .first;
+
+    mutableActivities.remove(activityToDelete);
+
+    return await _localSource.save(
+      LocalSource.KEY_ACTIVITIES,
+      mutableActivities,
+    );
+  }
 }
