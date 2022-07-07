@@ -9,6 +9,19 @@ var pageOrder = [
   HomePages.summary,
 ];
 
+@CopyWith()
+class ActivityState {
+  final Activity activity;
+  final bool isEditable;
+  final bool isSelected;
+
+  const ActivityState({
+    required this.activity,
+    required this.isEditable,
+    required this.isSelected,
+  });
+}
+
 class HomeState extends Equatable {
   static const DEFAULT_PAGE = HomePages.dayCount;
   static const DEFAULT_DAY_COUNT =
@@ -46,7 +59,7 @@ class HomeState extends Equatable {
   final int underwear;
   final bool isEditingNotes;
   final String notes;
-  final Iterable<Activity> activities;
+  final Iterable<ActivityState> activities;
 
   HomeState copyWith({
     HomePages? page,
@@ -60,7 +73,7 @@ class HomeState extends Equatable {
     int? underwear,
     bool? isEditingNotes,
     String? notes,
-    Iterable<Activity>? activities,
+    Iterable<ActivityState>? activities,
   }) {
     return HomeState(
       page: page ?? this.page,

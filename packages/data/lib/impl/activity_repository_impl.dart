@@ -9,7 +9,7 @@ class ActivityRepositoryImpl extends ActivityRepository {
 
   final LocalSource _localSource;
 
-  static const DEFAULT_ACTIVITIES = [Activity('Swimming', '')];
+  static const DEFAULT_ACTIVITIES = [Activity(name: 'Swimming', note: '')];
 
   /// will throw NullThrownError on first time, since there are
   /// no activities saved yet.

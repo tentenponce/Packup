@@ -67,6 +67,15 @@ class HomeAddActivity extends HomeEvent {
   List<Object> get props => [name];
 }
 
+class HomeEditActivityNote extends HomeEvent {
+  const HomeEditActivityNote(this.name);
+
+  final String name;
+
+  @override
+  List<Object> get props => [name];
+}
+
 class HomeDeleteActivity extends HomeEvent {
   const HomeDeleteActivity(this.name);
 
@@ -77,11 +86,29 @@ class HomeDeleteActivity extends HomeEvent {
 }
 
 class HomeSaveActivityNote extends HomeEvent {
-  const HomeSaveActivityNote(this.name, this.note);
+  const HomeSaveActivityNote(this.name);
+
+  final String name;
+
+  @override
+  List<Object> get props => [name];
+}
+
+class HomeActivityNoteChanged extends HomeEvent {
+  const HomeActivityNoteChanged(this.name, this.note);
 
   final String name;
   final String note;
 
   @override
   List<Object> get props => [name, note];
+}
+
+class HomeActivityToggle extends HomeEvent {
+  const HomeActivityToggle(this.name);
+
+  final String name;
+
+  @override
+  List<Object> get props => [name];
 }

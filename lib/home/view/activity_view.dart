@@ -92,44 +92,79 @@ class ActivityViewState extends State<ActivityView> {
               },
             ),
             SizedBox(height: space_m),
-
-            /// build activity list
+            /* build activity list */
             BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
                 return Column(
-                  children: state.activities.map((activity) {
-                    return Row(children: [
-                      Checkbox(
-                          value: false,
-                          onChanged: (bool) {
-                            // TODO: select/deselect activity
-                          }),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(activity.name),
+                  children: state.activities.map((activityState) {
+                    final activity = activityState.activity;
+                    final isEditable = activityState.isEditable;
+                    final isSelected = activityState.isSelected;
+                    return Column(
+                      children: [
+                        Row(
+                          children: [
+                            Checkbox(
+                                value: isSelected,
+                                onChanged: (bool) {
+                                  context
+                                      .read<HomeBloc>()
+                                      .add(HomeActivityToggle(activity.name));
+                                }),
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(activity.name),
+                              ),
+                            ),
+                            SizedBox(width: space_xxs),
+                            UIIcon(
+                              width: grid_10,
+                              height: grid_10,
+                              asset: isEditable
+                                  ? 'assets/ic_check.svg'
+                                  : 'assets/ic_edit.svg',
+                              onPressed: () {
+                                context.read<HomeBloc>().add(isEditable
+                                    ? HomeSaveActivityNote(activity.name)
+                                    : HomeEditActivityNote(activity.name));
+                              },
+                            ),
+                            UIIcon(
+                              width: grid_10,
+                              height: grid_10,
+                              asset: 'assets/ic_close.svg',
+                              onPressed: () {
+                                context
+                                    .read<HomeBloc>()
+                                    .add(HomeDeleteActivity(activity.name));
+                              },
+                            ),
+                          ],
                         ),
-                      ),
-                      UIIcon(
-                        width: grid_8,
-                        height: grid_8,
-                        asset: 'assets/ic_edit.svg',
-                        onPressed: () {
-                          // TODO: add notes
-                        },
-                      ),
-                      SizedBox(width: space_xxs),
-                      UIIcon(
-                        width: grid_10,
-                        height: grid_10,
-                        asset: 'assets/ic_close.svg',
-                        onPressed: () {
-                          context
-                              .read<HomeBloc>()
-                              .add(HomeDeleteActivity(activity.name));
-                        },
-                      ),
-                    ]);
+                        /* notes per activity */
+                        Container(
+                          margin:
+                              EdgeInsets.only(left: space_s, right: space_s),
+                          child: TextFormField(
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            initialValue: activity.note,
+                            enabled: isEditable,
+                            onChanged: (text) => context.read<HomeBloc>().add(
+                                HomeActivityNoteChanged(activity.name, text)),
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              hintText: 'Add notes for ${activity.name} here',
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: space_s),
+                      ],
+                    );
                   }).toList(),
                 );
               },

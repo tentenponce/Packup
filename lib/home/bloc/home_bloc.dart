@@ -9,9 +9,11 @@ import 'package:domain/interactor/notes/get_notes.dart';
 import 'package:domain/interactor/notes/save_notes.dart';
 import 'package:domain/model/activity.dart';
 import 'package:equatable/equatable.dart';
+import 'package:copy_with_extension/copy_with_extension.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
+part 'home_bloc.g.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
@@ -36,7 +38,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeSaveNotes>(_onHomeSaveNotes);
     on<HomeNotesChanged>(_onHomeNotesChanged);
     on<HomeAddActivity>(_onHomeAddActivity);
+    on<HomeEditActivityNote>(_onHomeEditActivityNote);
     on<HomeDeleteActivity>(_onHomeDeleteActivity);
+    on<HomeActivityNoteChanged>(_onHomeActivityNoteChanged);
+    on<HomeSaveActivityNote>(_onHomeSaveActivityNote);
+    on<HomeActivityToggle>(_onHomeActivityToggle);
   }
 
   final GetNotes _getNotes;
@@ -61,7 +67,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     final activities = await _getActivities.invoke();
 
-    emit(state.copyWith(activities: activities));
+    // by default, activities are not-editable
+    emit(
+      state.copyWith(
+        activities: activities.map(
+          (e) => ActivityState(
+            activity: e,
+            isEditable: false,
+            isSelected: false,
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _onHomeNextPage(
@@ -184,12 +201,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     try {
-      final newActivity = Activity(event.name, '');
+      final newActivity = Activity(name: event.name, note: '');
 
       await _saveActivity.invoke(newActivity);
 
       final activities = state.activities.toList();
-      activities.add(newActivity);
+      activities.add(ActivityState(
+        activity: newActivity,
+        isEditable: false,
+        isSelected: true,
+      ));
 
       emit(state.copyWith(activities: activities));
     } on DuplicateError {
@@ -205,13 +226,78 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     final activities = state.activities.toList();
 
-    final activityToDelete = activities
-        .where((activity) =>
-            activity.name.toLowerCase() == event.name.toLowerCase())
-        .first;
+    final activityToDelete = _findActivityIndex(event.name);
 
     activities.remove(activityToDelete);
 
     emit(state.copyWith(activities: activities));
+  }
+
+  void _onHomeEditActivityNote(
+    HomeEditActivityNote event,
+    Emitter<HomeState> emit,
+  ) {
+    final activities = state.activities.toList();
+
+    final indexOfActivityToEdit = _findActivityIndex(event.name);
+    final activityToEdit = activities[indexOfActivityToEdit];
+
+    activities[activities.indexOf(activityToEdit)] =
+        activityToEdit.copyWith(isEditable: true);
+
+    emit(state.copyWith(activities: activities));
+  }
+
+  Future<void> _onHomeSaveActivityNote(
+    HomeSaveActivityNote event,
+    Emitter<HomeState> emit,
+  ) async {
+    // TODO save on persistent storage
+
+    final activities = state.activities.toList();
+
+    final indexOfActivityToEdit = _findActivityIndex(event.name);
+    final activityToEdit = activities[indexOfActivityToEdit];
+
+    activities[activities.indexOf(activityToEdit)] =
+        activityToEdit.copyWith(isEditable: false);
+
+    emit(state.copyWith(activities: activities));
+  }
+
+  void _onHomeActivityNoteChanged(
+    HomeActivityNoteChanged event,
+    Emitter<HomeState> emit,
+  ) {
+    final activities = state.activities.toList();
+
+    final indexOfActivityToEdit = _findActivityIndex(event.name);
+    final activityToEdit = activities[indexOfActivityToEdit];
+
+    activities[indexOfActivityToEdit] = activityToEdit.copyWith(
+        activity: activityToEdit.activity.copyWith(note: event.note));
+
+    emit(state.copyWith(activities: activities));
+  }
+
+  void _onHomeActivityToggle(
+    HomeActivityToggle event,
+    Emitter<HomeState> emit,
+  ) {
+    final activities = state.activities.toList();
+
+    final indexOfActivityToEdit = _findActivityIndex(event.name);
+    final activityToEdit = activities[indexOfActivityToEdit];
+
+    activities[activities.indexOf(activityToEdit)] =
+        activityToEdit.copyWith(isSelected: !activityToEdit.isSelected);
+
+    emit(state.copyWith(activities: activities));
+  }
+
+  int _findActivityIndex(String activityName) {
+    return state.activities.toList().indexWhere((activityState) =>
+        activityState.activity.name.toLowerCase() ==
+        activityName.toLowerCase());
   }
 }

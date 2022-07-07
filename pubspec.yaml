@@ -43,12 +43,14 @@ dependencies:
   shared_preferences: ^2.0.7
   flutter_svg: ^0.20.0-nullsafety.3
   analyzer_plugin: ^0.11.0
+  copy_with_extension_gen: ^4.0.2
 
 dev_dependencies:
   test: ^1.16.0
   mockito: ^5.2.0
   build_runner: ^2.1.11
   bloc_test: ^9.0.0
+  copy_with_extension_gen: ^4.0.0
   flutter_test:
     sdk: flutter
 
