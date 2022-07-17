@@ -3,7 +3,7 @@ import 'package:domain/model/activity.dart';
 abstract class ActivityRepository {
   const ActivityRepository();
 
-  Future<void> saveActivity(Activity activity);
+  Future<void> insertOrUpdateActivity(Activity activity);
 
   Future<Iterable<Activity>> getActivities();
 

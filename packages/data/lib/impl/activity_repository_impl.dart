@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:data/source/local_source.dart';
 import 'package:domain/model/activity.dart';
 import 'package:domain/repository/activity_repository.dart';
@@ -28,10 +29,27 @@ class ActivityRepositoryImpl extends ActivityRepository {
     }
   }
 
+  /// This function will either add the activity if not exists,
+  /// or update if exists.
   @override
-  Future<void> saveActivity(Activity activity) async {
+  Future<void> insertOrUpdateActivity(Activity activity) async {
     final activities = await getActivities();
-    final mutableActivities = activities.toList()..add(activity);
+
+    final sameActivity =
+        activities.firstWhereOrNull((e) => e.name == activity.name);
+
+    List<Activity> mutableActivities;
+    if (sameActivity != null) {
+      /* update list if same activity */
+      mutableActivities = activities.toList();
+
+      final index =
+          mutableActivities.indexWhere((e) => e.name == activity.name);
+
+      mutableActivities[index] = activity;
+    } else {
+      mutableActivities = activities.toList()..add(activity);
+    }
 
     return await _localSource.save(
       LocalSource.KEY_ACTIVITIES,

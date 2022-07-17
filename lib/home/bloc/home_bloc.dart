@@ -5,6 +5,7 @@ import 'package:domain/errors/duplicate_error.dart';
 import 'package:domain/interactor/activity/delete_activity.dart';
 import 'package:domain/interactor/activity/get_activities.dart';
 import 'package:domain/interactor/activity/save_activity.dart';
+import 'package:domain/interactor/activity/update_activity_note.dart';
 import 'package:domain/interactor/notes/get_notes.dart';
 import 'package:domain/interactor/notes/save_notes.dart';
 import 'package:domain/model/activity.dart';
@@ -22,11 +23,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required GetActivities getActivities,
     required SaveActivity saveActivity,
     required DeleteActivity deleteActivity,
+    required UpdateActivityNote updateActivityNote,
   })  : _getNotes = getNotes,
         _saveNotes = saveNotes,
         _getActivities = getActivities,
         _saveActivity = saveActivity,
         _deleteActivity = deleteActivity,
+        _updateActivityNote = updateActivityNote,
         super(HomeState()) {
     on<HomeInit>(_onHomeInit);
     on<HomeNextPage>(_onHomeNextPage);
@@ -50,6 +53,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetActivities _getActivities;
   final SaveActivity _saveActivity;
   final DeleteActivity _deleteActivity;
+  final UpdateActivityNote _updateActivityNote;
 
   /* one time events */
   Stream<String> get showDuplicateActivity => _showDuplicateActivity.stream;
@@ -228,7 +232,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     final activityToDelete = _findActivityIndex(event.name);
 
-    activities.remove(activityToDelete);
+    activities.removeAt(activityToDelete);
 
     emit(state.copyWith(activities: activities));
   }
@@ -252,12 +256,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     HomeSaveActivityNote event,
     Emitter<HomeState> emit,
   ) async {
-    // TODO save on persistent storage
-
     final activities = state.activities.toList();
 
     final indexOfActivityToEdit = _findActivityIndex(event.name);
     final activityToEdit = activities[indexOfActivityToEdit];
+
+    await _updateActivityNote.invoke(activityToEdit.activity);
 
     activities[activities.indexOf(activityToEdit)] =
         activityToEdit.copyWith(isEditable: false);
@@ -274,8 +278,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final indexOfActivityToEdit = _findActivityIndex(event.name);
     final activityToEdit = activities[indexOfActivityToEdit];
 
-    activities[indexOfActivityToEdit] = activityToEdit.copyWith(
-        activity: activityToEdit.activity.copyWith(note: event.note));
+    final updatedActivity = activityToEdit.activity.copyWith(note: event.note);
+
+    activities[indexOfActivityToEdit] =
+        activityToEdit.copyWith(activity: updatedActivity);
 
     emit(state.copyWith(activities: activities));
   }
