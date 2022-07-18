@@ -30,9 +30,9 @@ class HomeState extends Equatable {
   static const DEFAULT_NIGHT_COUNT =
       '2'; // most of our trips is 2 nights long. Agree? lol
   static const DEFAULT_VALID_NIGHT_COUNT = true;
-  static const DEFAULT_DAY_CLOTHES = 3;
+  static const DEFAULT_DAY_CLOTHES = 2;
   static const DEFAULT_NIGHT_CLOTHES = 2;
-  static const DEFAULT_UNDERWEAR = 3;
+  static const DEFAULT_UNDERWEAR = 5;
   static const DEFAULT_IS_EDITING_NOTES = false;
 
   const HomeState({

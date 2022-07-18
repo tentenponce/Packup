@@ -71,7 +71,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     final activities = await _getActivities.invoke();
 
-    // by default, activities are not-editable
+    // by default, activities are not-editable and not selected
     emit(
       state.copyWith(
         activities: activities.map(
@@ -133,14 +133,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       dayCount = HomeState.DEFAULT_DAY_COUNT;
     }
 
-    /// TODO
     emit(state.copyWith(
       dayCount: event.dayCount,
       validDayCount: isValid,
-      dayClothes: int.parse(dayCount) - 1,
-      underwear: int.parse(dayCount) - 1,
-      // dayClothes: int.parse(dayCount) + int.parse(state.activityCount) - 1,
-      // underwear: int.parse(dayCount) + int.parse(state.activityCount) - 1,
+      dayClothes:
+          int.parse(dayCount) + _countSelectedActivities(state.activities) - 1,
+      underwear: ((int.parse(dayCount) - 1) * 2) + 1,
     ));
   }
 
@@ -175,6 +173,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       dayClothes: HomeState.DEFAULT_DAY_CLOTHES,
       nightClothes: HomeState.DEFAULT_NIGHT_CLOTHES,
       underwear: HomeState.DEFAULT_UNDERWEAR,
+      activities:
+          state.activities.toList().map((e) => e.copyWith(isSelected: false)),
     ));
   }
 
@@ -298,12 +298,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     activities[activities.indexOf(activityToEdit)] =
         activityToEdit.copyWith(isSelected: !activityToEdit.isSelected);
 
-    emit(state.copyWith(activities: activities));
+    emit(state.copyWith(
+      activities: activities,
+      dayClothes:
+          int.parse(state.dayCount) + _countSelectedActivities(activities) - 1,
+    ));
   }
 
   int _findActivityIndex(String activityName) {
     return state.activities.toList().indexWhere((activityState) =>
         activityState.activity.name.toLowerCase() ==
         activityName.toLowerCase());
+  }
+
+  int _countSelectedActivities(Iterable<ActivityState> activities) {
+    return activities.where((activity) => activity.isSelected).length;
   }
 }
