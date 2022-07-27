@@ -16,6 +16,7 @@ class ActivityView extends StatefulWidget {
 
 class ActivityViewState extends State<ActivityView> {
   StreamSubscription? _subShowDuplicateActivity;
+  StreamSubscription? _subShowEmptyActivity;
   String? _activityName;
 
   @override
@@ -40,11 +41,31 @@ class ActivityViewState extends State<ActivityView> {
             );
           });
     });
+
+    _subShowEmptyActivity =
+        context.read<HomeBloc>().showEmptyActivity.listen((activity) {
+      showDialog(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: Text('Activity name cannot be empty.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+    });
   }
 
   @override
   void dispose() {
     _subShowDuplicateActivity?.cancel();
+    _subShowEmptyActivity?.cancel();
     super.dispose();
   }
 

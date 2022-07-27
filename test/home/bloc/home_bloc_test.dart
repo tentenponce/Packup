@@ -1,7 +1,11 @@
+import 'package:domain/errors/duplicate_error.dart';
+import 'package:domain/interactor/activity/delete_activity.dart';
 import 'package:domain/interactor/activity/get_activities.dart';
 import 'package:domain/interactor/activity/save_activity.dart';
+import 'package:domain/interactor/activity/update_activity_note.dart';
 import 'package:domain/interactor/notes/get_notes.dart';
 import 'package:domain/interactor/notes/save_notes.dart';
+import 'package:domain/model/activity.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:packup/home/bloc/home_bloc.dart';
@@ -10,7 +14,14 @@ import 'package:bloc_test/bloc_test.dart';
 
 import 'home_bloc_test.mocks.dart';
 
-@GenerateMocks([GetNotes, SaveNotes, GetActivities, SaveActivity])
+@GenerateMocks([
+  GetNotes,
+  SaveNotes,
+  GetActivities,
+  SaveActivity,
+  DeleteActivity,
+  UpdateActivityNote,
+])
 void main() {
   group('HomeBloc', () {
     late HomeBloc homeBloc;
@@ -18,19 +29,29 @@ void main() {
     late MockSaveNotes saveNotes;
     late MockGetActivities getActivities;
     late MockSaveActivity saveActivity;
+    late DeleteActivity deleteActivity;
+    late UpdateActivityNote updateActivityNote;
 
     setUp(() {
       getNotes = MockGetNotes();
       saveNotes = MockSaveNotes();
       getActivities = MockGetActivities();
       saveActivity = MockSaveActivity();
+      deleteActivity = MockDeleteActivity();
+      updateActivityNote = MockUpdateActivityNote();
+
       when(saveNotes.invoke(any)).thenAnswer((_) => Future.value(null));
       when(getNotes.invoke()).thenAnswer((_) => Future.value('test notes'));
+      when(getActivities.invoke()).thenAnswer(
+          (realInvocation) => Future.value([Activity(name: 'Swimming')]));
+
       homeBloc = HomeBloc(
         getNotes: getNotes,
         saveNotes: saveNotes,
         getActivities: getActivities,
         saveActivity: saveActivity,
+        deleteActivity: deleteActivity,
+        updateActivityNote: updateActivityNote,
       );
     });
 
@@ -100,60 +121,20 @@ void main() {
     );
 
     blocTest(
-      'should validate activity page properly',
-      build: () => homeBloc,
-      act: (HomeBloc bloc) {
-        bloc.add(HomeDayCountChanged('3'));
-        bloc.add(HomeNextPage());
-        bloc.add(HomeNightCountChanged('2'));
-        bloc.add(HomeNextPage());
-        bloc.add(HomeActivityCountChanged('1'));
-        bloc.add(HomeNextPage());
-      },
-      expect: () => <dynamic>[
-        HomeState(page: HomePages.dayCount),
-        HomeState(page: HomePages.nightCount),
-        HomeState(page: HomePages.activityCount),
-        isA<HomeState>()
-            .having((state) => state.page, 'summary page', HomePages.summary)
-      ],
-    );
-
-    blocTest(
-      'should validate activity page properly',
-      build: () => homeBloc,
-      act: (HomeBloc bloc) {
-        bloc.add(HomeDayCountChanged('3'));
-        bloc.add(HomeNextPage());
-        bloc.add(HomeNightCountChanged('2'));
-        bloc.add(HomeNextPage());
-        bloc.add(HomeActivityCountChanged('asd'));
-        bloc.add(HomeNextPage());
-      },
-      expect: () => <dynamic>[
-        HomeState(page: HomePages.dayCount),
-        HomeState(page: HomePages.nightCount),
-        HomeState(page: HomePages.activityCount),
-        isA<HomeState>()
-            .having((state) => state.page, 'activity count page',
-                HomePages.activityCount)
-            .having((state) => state.validActivityCount,
-                'invalid activity count', false)
-      ],
-    );
-
-    blocTest(
       'should compute clothes properly',
       build: () => homeBloc,
       act: (HomeBloc bloc) {
+        bloc.add(HomeInit());
         bloc.add(HomeDayCountChanged('5'));
         bloc.add(HomeNextPage());
         bloc.add(HomeNightCountChanged('4'));
         bloc.add(HomeNextPage());
-        bloc.add(HomeActivityCountChanged('2'));
+        bloc.add(HomeActivityToggle('Swimming'));
         bloc.add(HomeNextPage());
       },
       expect: () => <dynamic>[
+        isA<HomeState>().having(
+            (state) => state.page, 'day count page', HomePages.dayCount),
         isA<HomeState>().having(
             (state) => state.page, 'day count page', HomePages.dayCount),
         isA<HomeState>().having(
@@ -165,9 +146,9 @@ void main() {
         isA<HomeState>().having((state) => state.page, 'activity count page',
             HomePages.activityCount),
         isA<HomeState>()
-            .having((state) => state.dayClothes, 'day clothes', 6)
+            .having((state) => state.dayClothes, 'day clothes', 5)
             .having((state) => state.nightClothes, 'night clothes', 4)
-            .having((state) => state.underwear, 'underwear', 6)
+            .having((state) => state.underwear, 'underwear', 9)
       ],
     );
 
@@ -179,7 +160,6 @@ void main() {
         bloc.add(HomeNextPage());
         bloc.add(HomeNightCountChanged('4'));
         bloc.add(HomeNextPage());
-        bloc.add(HomeActivityCountChanged('2'));
         bloc.add(HomeNextPage());
       },
       verify: (_) {
@@ -200,8 +180,6 @@ void main() {
           validDayCount: HomeState.DEFAULT_VALID_DAY_COUNT,
           nightCount: HomeState.DEFAULT_NIGHT_COUNT,
           validNightCount: HomeState.DEFAULT_VALID_NIGHT_COUNT,
-          activityCount: HomeState.DEFAULT_ACTIVITY_COUNT,
-          validActivityCount: HomeState.DEFAULT_VALID_ACTIVITY_COUNT,
           dayClothes: HomeState.DEFAULT_DAY_CLOTHES,
           nightClothes: HomeState.DEFAULT_NIGHT_CLOTHES,
           underwear: HomeState.DEFAULT_UNDERWEAR,
@@ -239,6 +217,46 @@ void main() {
         ),
       ],
       verify: (_) => {verify(saveNotes.invoke('some test notes')).called(1)},
+    );
+
+    test('should show duplicate activity if activity is duplicate', () async {
+      when(saveActivity.invoke(any)).thenThrow(DuplicateError());
+
+      homeBloc.add(HomeInit());
+      homeBloc.add(HomeAddActivity('Swimming'));
+
+      final result = await homeBloc.showDuplicateActivity.first;
+      expect(result, 'Swimming');
+    });
+
+    test('should show empty name activity if returns empty error', () async {
+      when(saveActivity.invoke(any)).thenThrow(NullThrownError());
+
+      homeBloc.add(HomeInit());
+      homeBloc.add(HomeAddActivity('Swimming'));
+
+      expect(homeBloc.showEmptyActivity, emitsInOrder([null]));
+    });
+
+    blocTest(
+      'should save activity properly',
+      build: () => homeBloc,
+      act: (HomeBloc bloc) {
+        bloc.add(HomeInit());
+        bloc.add(HomeAddActivity('Hiking'));
+      },
+      expect: () => <dynamic>[
+        isA<HomeState>().having(
+          (state) => state.activities.first.activity.name,
+          'Swimming',
+          'Swimming',
+        ),
+        isA<HomeState>().having(
+          (state) => state.activities.elementAt(1).activity.name,
+          'Hiking',
+          'Hiking',
+        ),
+      ],
     );
   });
 }

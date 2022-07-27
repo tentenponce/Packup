@@ -12,6 +12,10 @@ class SaveActivity extends UseCase<Activity, void> {
 
   @override
   Future<void> invoke(Activity param) async {
+    if (param.name.isEmpty) {
+      throw NullThrownError();
+    }
+
     final activities = await _activityRepository.getActivities();
 
     final isExists = activities

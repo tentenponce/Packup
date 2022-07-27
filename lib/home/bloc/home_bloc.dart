@@ -59,6 +59,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Stream<String> get showDuplicateActivity => _showDuplicateActivity.stream;
   final _showDuplicateActivity = StreamController<String>.broadcast();
 
+  Stream<void> get showEmptyActivity => _showEmptyActivity.stream;
+  final _showEmptyActivity = StreamController<void>.broadcast();
+
   @override
   Future<void> close() {
     _showDuplicateActivity.close();
@@ -219,6 +222,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.copyWith(activities: activities));
     } on DuplicateError {
       _showDuplicateActivity.add(event.name);
+    } on NullThrownError {
+      _showEmptyActivity.add(null);
     }
   }
 
