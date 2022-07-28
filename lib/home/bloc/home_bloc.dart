@@ -65,6 +65,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Future<void> close() {
     _showDuplicateActivity.close();
+    _showEmptyActivity.close();
     return super.close();
   }
 
