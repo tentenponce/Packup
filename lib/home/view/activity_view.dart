@@ -156,9 +156,33 @@ class ActivityViewState extends State<ActivityView> {
                               height: grid_10,
                               asset: 'assets/ic_close.svg',
                               onPressed: () {
-                                context
-                                    .read<HomeBloc>()
-                                    .add(HomeDeleteActivity(activity.name));
+                                showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return AlertDialog(
+                                        title: Text(
+                                            'Delete ${activity.name} activity?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context, true);
+                                            },
+                                            child: Text('Cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context, true);
+                                              context
+                                                  .read<HomeBloc>()
+                                                  .add(HomeDeleteActivity(
+                                                    activity.name,
+                                                  ));
+                                            },
+                                            child: Text('OK'),
+                                          ),
+                                        ],
+                                      );
+                                    });
                               },
                             ),
                           ],

@@ -372,5 +372,53 @@ void main() {
         ),
       ],
     );
+
+    blocTest(
+      'should update day clothes after adding activity',
+      build: () => homeBloc,
+      act: (HomeBloc bloc) {
+        bloc.add(HomeInit());
+        bloc.add(HomeAddActivity('Hiking'));
+      },
+      expect: () => <dynamic>[
+        isA<HomeState>().having(
+          (state) => state.dayClothes,
+          'day clothes as is before adding',
+          2,
+        ),
+        isA<HomeState>().having(
+          (state) => state.dayClothes,
+          'day clothes 3 after adding',
+          3,
+        ),
+      ],
+    );
+
+    blocTest(
+      'should pdate day clothes after deleting activity',
+      build: () => homeBloc,
+      act: (HomeBloc bloc) {
+        bloc.add(HomeInit());
+        bloc.add(HomeAddActivity('Hiking'));
+        bloc.add(HomeDeleteActivity('Hiking'));
+      },
+      expect: () => <dynamic>[
+        isA<HomeState>().having(
+          (state) => state.dayClothes,
+          'day clothes as is before adding',
+          2,
+        ),
+        isA<HomeState>().having(
+          (state) => state.dayClothes,
+          'day clothes 3 after adding',
+          3,
+        ),
+        isA<HomeState>().having(
+          (state) => state.dayClothes,
+          'day clothes 2 after deleting',
+          2,
+        ),
+      ],
+    );
   });
 }

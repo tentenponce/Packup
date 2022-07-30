@@ -220,7 +220,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         isSelected: true,
       ));
 
-      emit(state.copyWith(activities: activities));
+      emit(state.copyWith(
+        activities: activities,
+        dayClothes: int.parse(state.dayCount) +
+            _countSelectedActivities(activities) -
+            1,
+      ));
     } on DuplicateError {
       _showDuplicateActivity.add(event.name);
     } on NullThrownError {
@@ -240,7 +245,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     activities.removeAt(activityToDelete);
 
-    emit(state.copyWith(activities: activities));
+    emit(state.copyWith(
+      activities: activities,
+      dayClothes:
+          int.parse(state.dayCount) + _countSelectedActivities(activities) - 1,
+    ));
   }
 
   void _onHomeEditActivityNote(
