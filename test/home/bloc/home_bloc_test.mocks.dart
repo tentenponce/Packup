@@ -4,8 +4,13 @@
 
 import 'dart:async' as _i3;
 
-import 'package:domain/interactor/get_notes.dart' as _i2;
-import 'package:domain/interactor/save_notes.dart' as _i4;
+import 'package:domain/interactor/activity/delete_activity.dart' as _i8;
+import 'package:domain/interactor/activity/get_activities.dart' as _i5;
+import 'package:domain/interactor/activity/save_activity.dart' as _i7;
+import 'package:domain/interactor/activity/update_activity_note.dart' as _i9;
+import 'package:domain/interactor/notes/get_notes.dart' as _i2;
+import 'package:domain/interactor/notes/save_notes.dart' as _i4;
+import 'package:domain/model/activity.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -42,6 +47,67 @@ class MockSaveNotes extends _i1.Mock implements _i4.SaveNotes {
 
   @override
   _i3.Future<void> invoke(String? param) =>
+      (super.noSuchMethod(Invocation.method(#invoke, [param]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);
+}
+
+/// A class which mocks [GetActivities].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGetActivities extends _i1.Mock implements _i5.GetActivities {
+  MockGetActivities() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<Iterable<_i6.Activity>> invoke() => (super.noSuchMethod(
+          Invocation.method(#invoke, []),
+          returnValue: Future<Iterable<_i6.Activity>>.value(<_i6.Activity>[]))
+      as _i3.Future<Iterable<_i6.Activity>>);
+}
+
+/// A class which mocks [SaveActivity].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSaveActivity extends _i1.Mock implements _i7.SaveActivity {
+  MockSaveActivity() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<void> invoke(_i6.Activity? param) =>
+      (super.noSuchMethod(Invocation.method(#invoke, [param]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);
+}
+
+/// A class which mocks [DeleteActivity].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDeleteActivity extends _i1.Mock implements _i8.DeleteActivity {
+  MockDeleteActivity() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<void> invoke(String? param) =>
+      (super.noSuchMethod(Invocation.method(#invoke, [param]),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);
+}
+
+/// A class which mocks [UpdateActivityNote].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUpdateActivityNote extends _i1.Mock
+    implements _i9.UpdateActivityNote {
+  MockUpdateActivityNote() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<void> invoke(_i6.Activity? param) =>
       (super.noSuchMethod(Invocation.method(#invoke, [param]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);

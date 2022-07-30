@@ -9,6 +9,19 @@ var pageOrder = [
   HomePages.summary,
 ];
 
+@CopyWith()
+class ActivityState {
+  final Activity activity;
+  final bool isEditable;
+  final bool isSelected;
+
+  const ActivityState({
+    required this.activity,
+    required this.isEditable,
+    required this.isSelected,
+  });
+}
+
 class HomeState extends Equatable {
   static const DEFAULT_PAGE = HomePages.dayCount;
   static const DEFAULT_DAY_COUNT =
@@ -17,12 +30,9 @@ class HomeState extends Equatable {
   static const DEFAULT_NIGHT_COUNT =
       '2'; // most of our trips is 2 nights long. Agree? lol
   static const DEFAULT_VALID_NIGHT_COUNT = true;
-  static const DEFAULT_ACTIVITY_COUNT =
-      '1'; // most of our trips has swimming. Agree? lol
-  static const DEFAULT_VALID_ACTIVITY_COUNT = true;
-  static const DEFAULT_DAY_CLOTHES = 3;
+  static const DEFAULT_DAY_CLOTHES = 2;
   static const DEFAULT_NIGHT_CLOTHES = 2;
-  static const DEFAULT_UNDERWEAR = 3;
+  static const DEFAULT_UNDERWEAR = 5;
   static const DEFAULT_IS_EDITING_NOTES = false;
 
   const HomeState({
@@ -31,13 +41,12 @@ class HomeState extends Equatable {
     this.validDayCount = DEFAULT_VALID_DAY_COUNT,
     this.nightCount = DEFAULT_NIGHT_COUNT,
     this.validNightCount = DEFAULT_VALID_NIGHT_COUNT,
-    this.activityCount = DEFAULT_ACTIVITY_COUNT,
-    this.validActivityCount = DEFAULT_VALID_ACTIVITY_COUNT,
     this.dayClothes = DEFAULT_DAY_CLOTHES,
     this.nightClothes = DEFAULT_NIGHT_CLOTHES,
     this.underwear = DEFAULT_UNDERWEAR,
     this.isEditingNotes = DEFAULT_IS_EDITING_NOTES,
     this.notes = '',
+    this.activities = const Iterable.empty(),
   });
 
   final HomePages page;
@@ -45,13 +54,12 @@ class HomeState extends Equatable {
   final bool validDayCount;
   final String nightCount;
   final bool validNightCount;
-  final String activityCount;
-  final bool validActivityCount;
   final int dayClothes;
   final int nightClothes;
   final int underwear;
   final bool isEditingNotes;
   final String notes;
+  final Iterable<ActivityState> activities;
 
   HomeState copyWith({
     HomePages? page,
@@ -60,12 +68,12 @@ class HomeState extends Equatable {
     String? nightCount,
     bool? validNightCount,
     String? activityCount,
-    bool? validActivityCount,
     int? dayClothes,
     int? nightClothes,
     int? underwear,
     bool? isEditingNotes,
     String? notes,
+    Iterable<ActivityState>? activities,
   }) {
     return HomeState(
       page: page ?? this.page,
@@ -73,13 +81,12 @@ class HomeState extends Equatable {
       validDayCount: validDayCount ?? this.validDayCount,
       nightCount: nightCount ?? this.nightCount,
       validNightCount: validNightCount ?? this.validNightCount,
-      activityCount: activityCount ?? this.activityCount,
-      validActivityCount: validActivityCount ?? this.validActivityCount,
       dayClothes: dayClothes ?? this.dayClothes,
       nightClothes: nightClothes ?? this.nightClothes,
       underwear: underwear ?? this.underwear,
       isEditingNotes: isEditingNotes ?? this.isEditingNotes,
       notes: notes ?? this.notes,
+      activities: activities ?? this.activities,
     );
   }
 
@@ -90,12 +97,11 @@ class HomeState extends Equatable {
         validDayCount,
         nightCount,
         validNightCount,
-        activityCount,
-        validActivityCount,
         dayClothes,
         nightClothes,
         underwear,
         isEditingNotes,
         notes,
+        activities,
       ];
 }

@@ -10,7 +10,7 @@ Assists you in packing up your next trip.
 
 ### Run tests
 
-- Generate mocks first: `flutter pub run build_runner build`
+- Generate mocks and object json serialization first: `flutter pub run build_runner build`
 - Then run unit tests: `flutter test test`
 
 ### Playstore link
