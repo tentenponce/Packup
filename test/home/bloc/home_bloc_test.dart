@@ -29,8 +29,8 @@ void main() {
     late MockSaveNotes saveNotes;
     late MockGetActivities getActivities;
     late MockSaveActivity saveActivity;
-    late DeleteActivity deleteActivity;
-    late UpdateActivityNote updateActivityNote;
+    late MockDeleteActivity deleteActivity;
+    late MockUpdateActivityNote updateActivityNote;
 
     setUp(() {
       getNotes = MockGetNotes();
@@ -255,6 +255,120 @@ void main() {
           (state) => state.activities.elementAt(1).activity.name,
           'Hiking',
           'Hiking',
+        ),
+      ],
+    );
+
+    blocTest(
+      'should go back to previous page successfully',
+      build: () => homeBloc,
+      act: (HomeBloc bloc) {
+        bloc.add(HomeDayCountChanged('1'));
+        bloc.add(HomeNextPage());
+        bloc.add(HomePreviousPage());
+      },
+      expect: () => <dynamic>[
+        isA<HomeState>().having(
+            (state) => state.page, 'day count page', HomePages.dayCount),
+        isA<HomeState>().having(
+            (state) => state.page, 'night count page', HomePages.nightCount),
+        isA<HomeState>().having((state) => state.page, 'go back day count page',
+            HomePages.dayCount),
+      ],
+    );
+
+    blocTest(
+      'should edit general note properly',
+      build: () => homeBloc,
+      act: (HomeBloc bloc) {
+        bloc.add(HomeEditNotes());
+      },
+      expect: () => <dynamic>[
+        isA<HomeState>().having(
+            (state) => state.isEditingNotes, 'editable notes true', true),
+      ],
+    );
+
+    blocTest(
+      'should delete activities properly',
+      build: () => homeBloc,
+      act: (HomeBloc bloc) {
+        bloc.add(HomeInit());
+        bloc.add(HomeDeleteActivity('Swimming'));
+      },
+      expect: () => <dynamic>[
+        isA<HomeState>()
+            .having(
+              (state) => state.activities.elementAt(0).activity.name,
+              'swimming exists',
+              'Swimming',
+            )
+            .having(
+              (state) => state.activities.length,
+              '1 activity',
+              1,
+            ),
+        isA<HomeState>().having(
+          (state) => state.activities.length,
+          'no activity after delete',
+          0,
+        ),
+      ],
+      verify: (_) => {verify(deleteActivity.invoke('Swimming')).called(1)},
+    );
+
+    blocTest(
+      'should save activity note properly',
+      build: () => homeBloc,
+      act: (HomeBloc bloc) {
+        bloc.add(HomeInit());
+        bloc.add(HomeActivityNoteChanged('Swimming', 'slippers'));
+        bloc.add(HomeSaveActivityNote('Swimming'));
+      },
+      expect: () => <dynamic>[
+        isA<HomeState>().having(
+          (state) => state.activities.elementAt(0).activity.note,
+          'no note',
+          null,
+        ),
+        isA<HomeState>().having(
+          (state) => state.activities.elementAt(0).activity.note,
+          'notes added properly',
+          'slippers',
+        ),
+        isA<HomeState>().having(
+          (state) => state.activities.elementAt(0).isEditable,
+          'disable editing after saving',
+          false,
+        ),
+      ],
+      verify: (_) {
+        final verification = verify(updateActivityNote.invoke(captureAny));
+
+        expect((verification.captured[0] as Activity).name, 'Swimming');
+        expect((verification.captured[0] as Activity).note, 'slippers');
+
+        verification.called(1);
+      },
+    );
+
+    blocTest(
+      'should edit activity properly',
+      build: () => homeBloc,
+      act: (HomeBloc bloc) {
+        bloc.add(HomeInit());
+        bloc.add(HomeEditActivityNote('Swimming'));
+      },
+      expect: () => <dynamic>[
+        isA<HomeState>().having(
+          (state) => state.activities.elementAt(0).isEditable,
+          'note editable at first',
+          false,
+        ),
+        isA<HomeState>().having(
+          (state) => state.activities.elementAt(0).isEditable,
+          'editable',
+          true,
         ),
       ],
     );
