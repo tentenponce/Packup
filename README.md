@@ -11,7 +11,7 @@ Assists you in packing up your next trip.
 ### Run tests
 
 - Generate mocks and object json serialization first: `flutter pub run build_runner build`
-- Then run unit tests: `flutter test test`
+- Then run unit tests: `flutter test test --coverage`
 
 ### Playstore link
 
